@@ -1,9 +1,8 @@
 package org.example.customer_management;
 
+import org.example.customer_management.dto.CustomerDto;
 import org.example.customer_management.entity.Customer;
 import org.example.customer_management.repository.CustomerRepository;
-import org.example.customer_management.request.CustomerRequest;
-import org.example.customer_management.response.CustomerResponse;
 import org.example.customer_management.service.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,24 +28,24 @@ class CustomerServiceImplTest {
     private CustomerServiceImpl customerService;
 
     private UUID customerId;
+    private CustomerDto customerDto;
     private Customer customer;
-    private CustomerRequest customerRequest;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         customerId = UUID.randomUUID();
-        customerRequest = new CustomerRequest(
+        customerDto = new CustomerDto(
                 "John Doe",
                 "john@example.com",
                 new BigDecimal("5000"),
                 LocalDateTime.now().minusMonths(2)
         );
         customer = new Customer(
-                customerRequest.getName(),
-                customerRequest.getEmail(),
-                customerRequest.getAnnualSpend(),
-                customerRequest.getLastPurchaseDate()
+                customerDto.getName(),
+                customerDto.getEmail(),
+                customerDto.getAnnualSpend(),
+                customerDto.getLastPurchaseDate()
         );
         customer.setId(customerId);
     }
@@ -55,7 +54,7 @@ class CustomerServiceImplTest {
     void shouldCreateCustomer() {
         when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
-        CustomerResponse response = customerService.createCustomer(customerRequest);
+        CustomerDto response = customerService.createCustomer(customerDto);
 
         assertThat(response).isNotNull();
         assertThat(response.getName()).isEqualTo("John Doe");
@@ -66,7 +65,7 @@ class CustomerServiceImplTest {
     void shouldGetCustomerById() {
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
 
-        CustomerResponse response = customerService.getCustomerById(customerId);
+        CustomerDto response = customerService.getCustomerById(customerId);
 
         assertThat(response).isNotNull();
         assertThat(response.getId()).isEqualTo(customerId);
@@ -76,7 +75,7 @@ class CustomerServiceImplTest {
     void shouldGetCustomerByEmail() {
         when(customerRepository.findByEmail("john@example.com")).thenReturn(Optional.of(customer));
 
-        CustomerResponse response = customerService.getCustomerByEmail("john@example.com");
+        CustomerDto response = customerService.getCustomerByEmail("john@example.com");
 
         assertThat(response).isNotNull();
         assertThat(response.getEmail()).isEqualTo("john@example.com");
@@ -86,7 +85,7 @@ class CustomerServiceImplTest {
     void shouldGetCustomerByName() {
         when(customerRepository.findByName("John Doe")).thenReturn(Optional.of(customer));
 
-        CustomerResponse response = customerService.getCustomerByName("John Doe");
+        CustomerDto response = customerService.getCustomerByName("John Doe");
 
         assertThat(response).isNotNull();
         assertThat(response.getName()).isEqualTo("John Doe");
@@ -97,14 +96,14 @@ class CustomerServiceImplTest {
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
         when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
-        CustomerRequest updatedRequest = new CustomerRequest(
+        CustomerDto updatedDto = new CustomerDto(
                 "Jane Doe",
                 "jane@example.com",
                 new BigDecimal("7000"),
                 LocalDateTime.now()
         );
 
-        CustomerResponse response = customerService.updateCustomer(customerId, updatedRequest);
+        CustomerDto response = customerService.updateCustomer(customerId, updatedDto);
 
         assertThat(response.getName()).isEqualTo("Jane Doe");
         assertThat(response.getEmail()).isEqualTo("jane@example.com");
@@ -170,7 +169,7 @@ class CustomerServiceImplTest {
 
     @Test
     void shouldValidateEmailFormat() {
-        CustomerRequest invalidRequest = new CustomerRequest(
+        CustomerDto invalidDto = new CustomerDto(
                 "Invalid User",
                 "invalid-email", // geçersiz email formatı
                 new BigDecimal("3000"),
@@ -178,7 +177,7 @@ class CustomerServiceImplTest {
         );
 
         // basit regex kontrolü simüle
-        boolean isValidEmail = invalidRequest.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+        boolean isValidEmail = invalidDto.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
 
         assertThat(isValidEmail).isFalse();
     }

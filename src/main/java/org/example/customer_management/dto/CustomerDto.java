@@ -25,6 +25,9 @@ public class CustomerDto {
     public CustomerDto() {
     }
 
+    public CustomerDto(String invalidUser, String s, BigDecimal bigDecimal, LocalDateTime now) {
+    }
+
     public UUID getId() {
         return id;
     }

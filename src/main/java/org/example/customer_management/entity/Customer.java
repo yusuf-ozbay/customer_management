@@ -46,6 +46,9 @@ public class Customer {
     public Customer() {
     }
 
+    public Customer(String name, String email, BigDecimal annualSpend, LocalDateTime lastPurchaseDate) {
+    }
+
     public UUID getId() {
         return id;
     }
