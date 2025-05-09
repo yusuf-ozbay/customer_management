@@ -1,6 +1,9 @@
-package org.example.customer_management.response;
+package org.example.customer_management.dto;
 
-
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.example.customer_management.enums.CustomerTier;
 
 import java.math.BigDecimal;
@@ -8,16 +11,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 
-public class CustomerResponse {
-
-    private UUID id;
-    private String name;
-    private String email;
-    private BigDecimal annualSpend;
-    private LocalDateTime lastPurchaseDate;
-    private CustomerTier tier;
-
-    public CustomerResponse(UUID id, String name, String email, BigDecimal annualSpend, LocalDateTime lastPurchaseDate, CustomerTier tier) {
+@Builder
+public class CustomerDto {
+    public CustomerDto(UUID id, String name, String email, BigDecimal annualSpend, LocalDateTime lastPurchaseDate, CustomerTier tier) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -26,7 +22,7 @@ public class CustomerResponse {
         this.tier = tier;
     }
 
-    public CustomerResponse() {
+    public CustomerDto() {
     }
 
     public UUID getId() {
@@ -76,4 +72,11 @@ public class CustomerResponse {
     public void setTier(CustomerTier tier) {
         this.tier = tier;
     }
+
+    private UUID id;
+    private String name;
+    private String email;
+    private BigDecimal annualSpend;
+    private LocalDateTime lastPurchaseDate;
+    private CustomerTier tier;
 }

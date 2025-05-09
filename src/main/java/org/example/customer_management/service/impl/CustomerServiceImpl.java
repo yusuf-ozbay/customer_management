@@ -2,9 +2,11 @@ package org.example.customer_management.service.impl;
 
 
 import lombok.RequiredArgsConstructor;
+import org.example.customer_management.dto.CustomerDto;
 import org.example.customer_management.entity.Customer;
+import org.example.customer_management.enums.CustomerTier;
+import org.example.customer_management.mapper.Mapper;
 import org.example.customer_management.repository.CustomerRepository;
-import org.example.customer_management.request.CustomerRequest;
 import org.example.customer_management.response.CustomerResponse;
 import org.example.customer_management.service.CustomerService;
 import org.springframework.stereotype.Service;
@@ -16,59 +18,54 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
 
+    public CustomerServiceImpl(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
+
 
     @Override
-    public CustomerResponse createCustomer(CustomerRequest request) {
-        Customer customer = new Customer(
-                request.getName(),
-                request.getEmail(),
-                request.getAnnualSpend(),
-                request.getLastPurchaseDate()
-        );
-
-        Customer saved = customerRepository.save(customer);
-        return mapToResponse(saved);
+    public CustomerDto createCustomer(CustomerDto dto) {
+        return Mapper.toDto(customerRepository.save(customerRepository.save(Mapper.toEntity(dto))));
     }
 
     @Override
-    public CustomerResponse getCustomerById(UUID id) {
+    public CustomerDto getCustomerById(UUID id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-        return mapToResponse(customer);
+        return Mapper.toDto(customer);
     }
 
     @Override
-    public CustomerResponse getCustomerByEmail(String email) {
+    public CustomerDto getCustomerByEmail(String email) {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-        return mapToResponse(customer);
+        return Mapper.toDto(customer);
     }
 
     @Override
-    public CustomerResponse getCustomerByName(String name) {
+    public CustomerDto getCustomerByName(String name) {
         Customer customer = customerRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-        return mapToResponse(customer);
+        return Mapper.toDto(customer);
     }
 
     @Override
-    public CustomerResponse updateCustomer(UUID id, CustomerRequest request) {
+    public CustomerDto updateCustomer(UUID id, CustomerDto dto) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        customer.setName(request.getName());
-        customer.setEmail(request.getEmail());
-        customer.setAnnualSpend(request.getAnnualSpend());
-        customer.setLastPurchaseDate(request.getLastPurchaseDate());
+        customer.setName(dto.getName());
+        customer.setEmail(dto.getEmail());
+        customer.setAnnualSpend(dto.getAnnualSpend());
+        customer.setLastPurchaseDate(dto.getLastPurchaseDate());
 
         Customer updated = customerRepository.save(customer);
-        return mapToResponse(updated);
+        return Mapper.toDto(updated);
     }
 
     @Override
@@ -79,34 +76,24 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.deleteById(id);
     }
 
-    // 🧠 Tier Hesaplama + Mapper
-    private CustomerResponse mapToResponse(Customer customer) {
-        CustomerResponse response = new CustomerResponse();
-        response.setId(customer.getId());
-        response.setName(customer.getName());
-        response.setEmail(customer.getEmail());
-        response.setAnnualSpend(customer.getAnnualSpend());
-        response.setLastPurchaseDate(customer.getLastPurchaseDate());
-
-        response.setTier(calculateTier(customer.getAnnualSpend(), customer.getLastPurchaseDate()));
-        return response;
-    }
-
-    private String calculateTier(BigDecimal spend, LocalDateTime lastPurchaseDate) {
-        if (spend == null) return "Silver";
+    // 🧠 Tier Hesaplama
+    public static CustomerTier calculateTier(BigDecimal spend, LocalDateTime lastPurchaseDate) {
+        if (spend == null) return CustomerTier.SILVER;
 
         if (spend.compareTo(new BigDecimal("10000")) >= 0) {
             if (lastPurchaseDate != null &&
                     ChronoUnit.MONTHS.between(lastPurchaseDate, LocalDateTime.now()) <= 6) {
-                return "Platinum";
+                return CustomerTier.PLATINUM;
             }
         } else if (spend.compareTo(new BigDecimal("1000")) >= 0) {
             if (lastPurchaseDate != null &&
                     ChronoUnit.MONTHS.between(lastPurchaseDate, LocalDateTime.now()) <= 12) {
-                return "Gold";
+                return CustomerTier.GOLD;
             }
         }
-        return "Silver";
+
+        return CustomerTier.SILVER;
     }
+
 }
 
