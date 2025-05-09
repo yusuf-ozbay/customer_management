@@ -2,63 +2,63 @@ package org.example.customer_management.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.customer_management.mapper.Mapper;
 import org.example.customer_management.request.CustomerRequest;
 import org.example.customer_management.response.CustomerResponse;
+import org.example.customer_management.rest.BaseController;
+import org.example.customer_management.rest.MetaResponse;
+import org.example.customer_management.rest.Response;
 import org.example.customer_management.service.CustomerService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/customers")
-@RequiredArgsConstructor
-public class CustomerController {
+public class CustomerController extends BaseController {
 
     private final CustomerService customerService;
 
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     // POST /customers
     @PostMapping
-    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody CustomerRequest request) {
-        CustomerResponse response = customerService.createCustomer(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public Response<CustomerResponse> createCustomer(@Valid @RequestBody CustomerRequest request) {
+        return respond(Mapper.toResponse(customerService.createCustomer(Mapper.toDto(request))));
     }
 
     // GET /customers/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable UUID id) {
-        CustomerResponse response = customerService.getCustomerById(id);
-        return ResponseEntity.ok(response);
+    public Response<CustomerResponse> getCustomerById(@PathVariable UUID id) {
+        return respond(Mapper.toResponse(customerService.getCustomerById(id)));
     }
 
     // GET /customers?email=
     @GetMapping(params = "email")
-    public ResponseEntity<CustomerResponse> getCustomerByEmail(@RequestParam String email) {
-        CustomerResponse response = customerService.getCustomerByEmail(email);
-        return ResponseEntity.ok(response);
+    public Response<CustomerResponse> getCustomerByEmail(@RequestParam String email) {
+        return respond(Mapper.toResponse(customerService.getCustomerByEmail(email)));
+
     }
 
     // GET /customers?name=
     @GetMapping(params = "name")
-    public ResponseEntity<CustomerResponse> getCustomerByName(@RequestParam String name) {
-        CustomerResponse response = customerService.getCustomerByName(name);
-        return ResponseEntity.ok(response);
+    public Response<CustomerResponse> getCustomerByName(@RequestParam String name) {
+        return respond(Mapper.toResponse(customerService.getCustomerByName(name)));
     }
 
     // PUT /customers/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable UUID id,
-                                                           @Valid @RequestBody CustomerRequest request) {
-        CustomerResponse response = customerService.updateCustomer(id, request);
-        return ResponseEntity.ok(response);
+    public Response<CustomerResponse> updateCustomer(@PathVariable UUID id,
+                                                     @Valid @RequestBody CustomerRequest request) {
+        return respond(Mapper.toResponse(customerService.updateCustomer(id,Mapper.toDto(request))));
     }
 
     // DELETE /customers/{id}
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable UUID id) {
+    public Response<Void> deleteCustomer(@PathVariable UUID id) {
         customerService.deleteCustomer(id);
-        return ResponseEntity.noContent().build();
+        return new Response<>(MetaResponse.success());
     }
 }
