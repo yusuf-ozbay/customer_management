@@ -4,6 +4,7 @@ import org.example.customer_management.dto.CustomerDto;
 import org.example.customer_management.entity.Customer;
 import org.example.customer_management.repository.CustomerRepository;
 import org.example.customer_management.service.impl.CustomerServiceImpl;
+import org.example.customer_management.enums.CustomerTier; // Bunu eklemeyi unutma
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -134,7 +135,7 @@ class CustomerServiceImplTest {
 
         String tier = callCalculateTier(spend, lastPurchase);
 
-        assertThat(tier).isEqualTo("Platinum");
+        assertThat(tier).isEqualTo("PLATINUM"); // Enum isimleri büyük harfle döner
     }
 
     @Test
@@ -144,7 +145,7 @@ class CustomerServiceImplTest {
 
         String tier = callCalculateTier(spend, lastPurchase);
 
-        assertThat(tier).isEqualTo("Gold");
+        assertThat(tier).isEqualTo("GOLD");
     }
 
     @Test
@@ -154,7 +155,7 @@ class CustomerServiceImplTest {
 
         String tier = callCalculateTier(spend, lastPurchase);
 
-        assertThat(tier).isEqualTo("Silver");
+        assertThat(tier).isEqualTo("SILVER");
     }
 
     @Test
@@ -164,30 +165,29 @@ class CustomerServiceImplTest {
 
         String tier = callCalculateTier(spend, lastPurchase);
 
-        assertThat(tier).isEqualTo("Silver");
+        assertThat(tier).isEqualTo("SILVER");
     }
 
     @Test
     void shouldValidateEmailFormat() {
         CustomerDto invalidDto = new CustomerDto(
                 "Invalid User",
-                "invalid-email", // geçersiz email formatı
+                "invalid-email",
                 new BigDecimal("3000"),
                 LocalDateTime.now()
         );
 
-        // basit regex kontrolü simüle
         boolean isValidEmail = invalidDto.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
 
         assertThat(isValidEmail).isFalse();
     }
 
-    // Private methodı test edebilmek için bir yardımcı method:
     private String callCalculateTier(BigDecimal spend, LocalDateTime lastPurchase) {
         try {
             var method = CustomerServiceImpl.class.getDeclaredMethod("calculateTier", BigDecimal.class, LocalDateTime.class);
             method.setAccessible(true);
-            return (String) method.invoke(customerService, spend, lastPurchase);
+            CustomerTier tier = (CustomerTier) method.invoke(customerService, spend, lastPurchase);
+            return tier != null ? tier.name() : null;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
