@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ResponseBuilder {
 
-    public ResponseBuilder() {
+    private ResponseBuilder() {
     }
 
     public static <T> Response<DataResponse<T>> build(List<T> items) {

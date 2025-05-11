@@ -12,31 +12,21 @@ import java.util.List;
  * Implements a custom toString() method for better readability.
  */
 
-
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DataResponse<T> {
     private List<T> items = List.of();
 
-    public DataResponse(List<T> items) {
-        this.items = items;
-    }
-
-    public DataResponse() {
-    }
-
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("dataItems: ");
-        if (items != null && !items.isEmpty()) {
-            items.forEach(builder::append);
+        StringBuilder sb = new StringBuilder("listItems: ");
+        if (items != null) {
+            items.forEach(item -> {
+                sb.append(item.toString());
+                sb.append('\n');
+            });
         }
-        return builder.toString();
-    }
-
-    public List<T> getItems() {
-        return items;
-    }
-
-    public void setItems(List<T> items) {
-        this.items = items;
+        return sb.toString();
     }
 }

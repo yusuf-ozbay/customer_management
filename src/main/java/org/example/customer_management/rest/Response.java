@@ -14,7 +14,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Response<T>{
+public class Response<T> {
+
     private T data;
     private MetaResponse meta;
 
@@ -22,13 +23,16 @@ public class Response<T>{
         this.meta = meta;
     }
 
-    public Response (T data) {
+    public Response(T data) {
         this.data = data;
         this.meta = MetaResponse.success();
     }
 
     @Override
     public String toString() {
-        return "data: " + (data != null ? data.toString() : "null") + ", meta: " + (meta != null ? meta.toString() : "null");
+        String sb = "data: " + (data != null ? data.toString() : "null") +
+                ", meta: " +
+                (meta != null ? meta.toString() : "null");
+        return sb;
     }
 }

@@ -1,13 +1,11 @@
 package org.example.customer_management.service.impl;
 
 
-import lombok.RequiredArgsConstructor;
 import org.example.customer_management.dto.CustomerDto;
 import org.example.customer_management.entity.Customer;
 import org.example.customer_management.enums.CustomerTier;
 import org.example.customer_management.mapper.Mapper;
 import org.example.customer_management.repository.CustomerRepository;
-import org.example.customer_management.response.CustomerResponse;
 import org.example.customer_management.service.CustomerService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +28,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDto createCustomer(CustomerDto dto) {
-        return Mapper.toDto(customerRepository.save(customerRepository.save(Mapper.toEntity(dto))));
+        return Mapper.toDto(customerRepository.save(Mapper.toEntity(dto)));
     }
 
     @Override

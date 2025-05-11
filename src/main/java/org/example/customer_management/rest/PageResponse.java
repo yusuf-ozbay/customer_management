@@ -12,32 +12,21 @@ import org.springframework.data.domain.Page;
  * Implements a custom toString() method for better readability.
  */
 
-
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PageResponse<T>{
     private Page<T> items = Page.empty();
 
-    public PageResponse(Page<T> items) {
-        this.items = items;
-    }
-
-    public PageResponse() {
-    }
-
-
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("pageItems: ");
-        if(items!=null && !items.isEmpty()){
-            items.forEach(builder::append);
+        StringBuilder sb = new StringBuilder("pageItems: ");
+        if (items != null) {
+            items.forEach(item -> {
+                sb.append(item.toString());
+                sb.append('\n');
+            });
         }
-        return builder.toString();
-    }
-
-    public Page<T> getItems() {
-        return items;
-    }
-
-    public void setItems(Page<T> items) {
-        this.items = items;
+        return sb.toString();
     }
 }

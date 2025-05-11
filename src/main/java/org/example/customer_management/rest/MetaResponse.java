@@ -13,18 +13,13 @@ import org.example.customer_management.enums.MessageCodes;
  */
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class MetaResponse {
-    public String description;
-    public String code;
 
-    public MetaResponse(String description, String code) {
-        this.description = description;
-        this.code = code;
-    }
-
-    public MetaResponse() {
-    }
+    private String code;
+    private String description;
 
     public static MetaResponse of(String code, String description) {
         return new MetaResponse(code, description);
@@ -37,5 +32,6 @@ public class MetaResponse {
     public static MetaResponse fail(String description) {
         return new MetaResponse(MessageCodes.FAIL.getCode(), description);
     }
+
 
 }

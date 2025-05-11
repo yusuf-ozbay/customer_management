@@ -22,11 +22,11 @@ public class BaseController {
         return ResponseBuilder.build(items);
     }
 
-    public <T> Response<T> respond(T item) {
+    protected <T> Response<T> respond(T item) {
         return ResponseBuilder.build(item);
     }
 
-    public Response<MetaResponse> respond(MetaResponse metaResponse) {
+    protected Response<MetaResponse> respond(MetaResponse metaResponse) {
         return ResponseBuilder.build(metaResponse);
     }
 }
