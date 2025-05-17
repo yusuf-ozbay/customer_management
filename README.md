@@ -13,36 +13,35 @@ Bu proje, müşterileri listeleme, arama, ekleme, silme ve güncelleme işlemler
 - Maven  
 
 ---
-### Gereksinimler
+## Gereksinimler
 
 - Java 17+
 - Maven
 
 ---
 
-### Derleme
+## Derleme
 mvn clean install
 mvn spring-boot:run
 
 ---
 ## API Bilgileri
+```
 POST /customers
 Content-Type: application/json
-
 {
   "name": "Jane Doe",
   "email": "jane.doe@example.com",
   "annualSpend": 2000,
   "lastPurchaseDate": "2025-05-10"
 }
-
+```
 GET /customers/1
-
+```
 GET /customers?email=jane.doe@example.com
-
+```
 PUT /customers/1
 Content-Type: application/json
-
 {
   "name": "Jane D.",
   "email": "jane.d@example.com",
@@ -60,7 +59,7 @@ Uygulama başlatıldığında aşağıdaki adres üzerinden API erişilebilir:
 - `http://localhost:8080`
 
 ---
-### Swagger UI
+## Swagger UI
 API'yi test etmek ve belgelerine ulaşmak için Swagger UI kullanılabilir:
 
 - `http://localhost:8080/swagger-ui/index.html`
