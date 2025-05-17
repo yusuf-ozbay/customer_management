@@ -25,33 +25,7 @@ mvn clean install
 mvn spring-boot:run
 
 ---
-## API Bilgileri
-```
-POST /customers
-Content-Type: application/json
-{
-  "name": "Jane Doe",
-  "email": "jane.doe@example.com",
-  "annualSpend": 2000,
-  "lastPurchaseDate": "2025-05-10"
-}
-```
-GET /customers/1
-```
-GET /customers?email=jane.doe@example.com
-```
-PUT /customers/1
-Content-Type: application/json
-{
-  "name": "Jane D.",
-  "email": "jane.d@example.com",
-  "annualSpend": 2500,
-  "lastPurchaseDate": "2025-05-15"
-}
 
-DELETE /customers/1
-
----
 ## 🔗 API URL
 
 Uygulama başlatıldığında aşağıdaki adres üzerinden API erişilebilir:
@@ -107,4 +81,33 @@ Uygulama çalışırken veritabanına erişmek için aşağıdaki H2 konsolu kul
 - Veritabanı H2 olduğundan dolayı uygulama kapanınca veriler sıfırlanır.
 - H2 Console ve Swagger UI sadece geliştirme ortamında açıktır.
 
+## 📡 API Bilgileri
+
+```http
+POST /customers
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "annualSpend": 2000,
+  "lastPurchaseDate": "2025-05-10"
+}
+
+GET /customers/1
+
+GET /customers?email=jane.doe@example.com
+
+PUT /customers/1
+Content-Type: application/json
+
+{
+  "name": "Jane D.",
+  "email": "jane.d@example.com",
+  "annualSpend": 2500,
+  "lastPurchaseDate": "2025-05-15"
+}
+
+DELETE /customers/1
+---
 
