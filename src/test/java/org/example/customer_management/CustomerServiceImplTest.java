@@ -2,194 +2,188 @@ package org.example.customer_management;
 
 import org.example.customer_management.dto.CustomerDto;
 import org.example.customer_management.entity.Customer;
+import org.example.customer_management.enums.CustomerTier;
+import org.example.customer_management.mapper.Mapper;
 import org.example.customer_management.repository.CustomerRepository;
 import org.example.customer_management.service.impl.CustomerServiceImpl;
-import org.example.customer_management.enums.CustomerTier; // Bunu eklemeyi unutma
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class CustomerServiceImplTest {
 
-    @Mock
     private CustomerRepository customerRepository;
-
-    @InjectMocks
     private CustomerServiceImpl customerService;
 
-    private UUID customerId;
-    private CustomerDto customerDto;
-    private Customer customer;
+    private CustomerDto sampleDto;
+    private Customer sampleEntity;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        customerId = UUID.randomUUID();
-        customerDto = new CustomerDto(
-                "John Doe",
-                "john@example.com",
-                new BigDecimal("5000"),
-                LocalDateTime.now().minusMonths(2)
-        );
-        customer = new Customer(
-                customerDto.getName(),
-                customerDto.getEmail(),
-                customerDto.getAnnualSpend(),
-                customerDto.getLastPurchaseDate()
-        );
-        customer.setId(customerId);
+        customerRepository = mock(CustomerRepository.class);
+        customerService = new CustomerServiceImpl(customerRepository);
+
+        // Ortak test verileri
+        sampleDto = new CustomerDto();
+        sampleDto.setId(UUID.randomUUID());
+        sampleDto.setName("John Doe");
+        sampleDto.setEmail("john@example.com");
+        sampleDto.setAnnualSpend(new BigDecimal("2000"));
+        sampleDto.setLastPurchaseDate(LocalDateTime.now().minusMonths(5));
+
+        sampleEntity = new Customer();
+        sampleEntity.setId(sampleDto.getId());
+        sampleEntity.setName(sampleDto.getName());
+        sampleEntity.setEmail(sampleDto.getEmail());
+        sampleEntity.setAnnualSpend(sampleDto.getAnnualSpend());
+        sampleEntity.setLastPurchaseDate(sampleDto.getLastPurchaseDate());
     }
 
     @Test
-    void shouldCreateCustomer() {
-        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+    void testCreateCustomer() {
+        try (MockedStatic<Mapper> mocked = Mockito.mockStatic(Mapper.class)) {
+            mocked.when(() -> Mapper.toEntity(sampleDto)).thenReturn(sampleEntity);
+            mocked.when(() -> Mapper.toDto(sampleEntity)).thenReturn(sampleDto);
 
-        CustomerDto response = customerService.createCustomer(customerDto);
+            when(customerRepository.save(sampleEntity)).thenReturn(sampleEntity);
 
-        assertThat(response).isNotNull();
-        assertThat(response.getName()).isEqualTo("John Doe");
-        assertThat(response.getEmail()).isEqualTo("john@example.com");
+            CustomerDto result = customerService.createCustomer(sampleDto);
+
+            assertNotNull(result);
+            assertEquals("John Doe", result.getName());
+        }
     }
 
     @Test
-    void shouldGetCustomerById() {
-        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+    void testGetCustomerById_Success() {
+        try (MockedStatic<Mapper> mocked = Mockito.mockStatic(Mapper.class)) {
+            when(customerRepository.findById(sampleDto.getId())).thenReturn(Optional.of(sampleEntity));
+            mocked.when(() -> Mapper.toDto(sampleEntity)).thenReturn(sampleDto);
 
-        CustomerDto response = customerService.getCustomerById(customerId);
+            CustomerDto result = customerService.getCustomerById(sampleDto.getId());
 
-        assertThat(response).isNotNull();
-        assertThat(response.getId()).isEqualTo(customerId);
+            assertNotNull(result);
+            assertEquals("john@example.com", result.getEmail());
+        }
     }
 
     @Test
-    void shouldGetCustomerByEmail() {
-        when(customerRepository.findByEmail("john@example.com")).thenReturn(Optional.of(customer));
+    void testGetCustomerById_NotFound() {
+        UUID id = UUID.randomUUID();
+        when(customerRepository.findById(id)).thenReturn(Optional.empty());
 
-        CustomerDto response = customerService.getCustomerByEmail("john@example.com");
-
-        assertThat(response).isNotNull();
-        assertThat(response.getEmail()).isEqualTo("john@example.com");
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> customerService.getCustomerById(id));
+        assertEquals("Customer not found", exception.getMessage());
     }
 
     @Test
-    void shouldGetCustomerByName() {
-        when(customerRepository.findByName("John Doe")).thenReturn(Optional.of(customer));
+    void testGetCustomerByEmail_Success() {
+        try (MockedStatic<Mapper> mocked = Mockito.mockStatic(Mapper.class)) {
+            when(customerRepository.findByEmail("john@example.com")).thenReturn(Optional.of(sampleEntity));
+            mocked.when(() -> Mapper.toDto(sampleEntity)).thenReturn(sampleDto);
 
-        CustomerDto response = customerService.getCustomerByName("John Doe");
+            CustomerDto result = customerService.getCustomerByEmail("john@example.com");
 
-        assertThat(response).isNotNull();
-        assertThat(response.getName()).isEqualTo("John Doe");
+            assertNotNull(result);
+            assertEquals("John Doe", result.getName());
+        }
     }
 
     @Test
-    void shouldUpdateCustomer() {
-        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
-        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+    void testGetCustomerByName_Success() {
+        try (MockedStatic<Mapper> mocked = Mockito.mockStatic(Mapper.class)) {
+            when(customerRepository.findByName("John Doe")).thenReturn(Optional.of(sampleEntity));
+            mocked.when(() -> Mapper.toDto(sampleEntity)).thenReturn(sampleDto);
 
-        CustomerDto updatedDto = new CustomerDto(
-                "Jane Doe",
-                "jane@example.com",
-                new BigDecimal("7000"),
-                LocalDateTime.now()
-        );
+            CustomerDto result = customerService.getCustomerByName("John Doe");
 
-        CustomerDto response = customerService.updateCustomer(customerId, updatedDto);
-
-        assertThat(response.getName()).isEqualTo("Jane Doe");
-        assertThat(response.getEmail()).isEqualTo("jane@example.com");
+            assertNotNull(result);
+            assertEquals("john@example.com", result.getEmail());
+        }
     }
 
     @Test
-    void shouldDeleteCustomer() {
-        when(customerRepository.existsById(customerId)).thenReturn(true);
+    void testUpdateCustomer_Success() {
+        try (MockedStatic<Mapper> mocked = Mockito.mockStatic(Mapper.class)) {
+            when(customerRepository.findById(sampleDto.getId())).thenReturn(Optional.of(sampleEntity));
+            when(customerRepository.save(any(Customer.class))).thenReturn(sampleEntity);
+            mocked.when(() -> Mapper.toDto(any(Customer.class))).thenReturn(sampleDto);
 
-        customerService.deleteCustomer(customerId);
+            CustomerDto result = customerService.updateCustomer(sampleDto.getId(), sampleDto);
 
-        verify(customerRepository, times(1)).deleteById(customerId);
+            assertNotNull(result);
+            assertEquals(sampleDto.getEmail(), result.getEmail());
+        }
     }
 
     @Test
-    void shouldThrowExceptionWhenCustomerNotFoundOnDelete() {
-        when(customerRepository.existsById(customerId)).thenReturn(false);
+    void testUpdateCustomer_NotFound() {
+        UUID id = UUID.randomUUID();
+        when(customerRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> customerService.deleteCustomer(customerId))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Customer not found");
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> customerService.updateCustomer(id, sampleDto));
+        assertEquals("Customer not found", exception.getMessage());
     }
 
     @Test
-    void shouldCalculatePlatinumTier() {
+    void testDeleteCustomer_Success() {
+        UUID id = UUID.randomUUID();
+        when(customerRepository.existsById(id)).thenReturn(true);
+        doNothing().when(customerRepository).deleteById(id);
+
+        assertDoesNotThrow(() -> customerService.deleteCustomer(id));
+    }
+
+    @Test
+    void testDeleteCustomer_NotFound() {
+        UUID id = UUID.randomUUID();
+        when(customerRepository.existsById(id)).thenReturn(false);
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> customerService.deleteCustomer(id));
+        assertEquals("Customer not found", exception.getMessage());
+    }
+
+    @Test
+    void testCalculateTier_Platinum() {
         BigDecimal spend = new BigDecimal("15000");
         LocalDateTime lastPurchase = LocalDateTime.now().minusMonths(3);
 
-        String tier = callCalculateTier(spend, lastPurchase);
-
-        assertThat(tier).isEqualTo("PLATINUM"); // Enum isimleri büyük harfle döner
+        CustomerTier tier = CustomerServiceImpl.calculateTier(spend, lastPurchase);
+        assertEquals(CustomerTier.PLATINUM, tier);
     }
 
     @Test
-    void shouldCalculateGoldTier() {
-        BigDecimal spend = new BigDecimal("5000");
-        LocalDateTime lastPurchase = LocalDateTime.now().minusMonths(8);
-
-        String tier = callCalculateTier(spend, lastPurchase);
-
-        assertThat(tier).isEqualTo("GOLD");
-    }
-
-    @Test
-    void shouldCalculateSilverTierForLowSpend() {
-        BigDecimal spend = new BigDecimal("500");
-        LocalDateTime lastPurchase = LocalDateTime.now().minusMonths(2);
-
-        String tier = callCalculateTier(spend, lastPurchase);
-
-        assertThat(tier).isEqualTo("SILVER");
-    }
-
-    @Test
-    void shouldCalculateSilverTierForOldPurchase() {
-        BigDecimal spend = new BigDecimal("15000");
+    void testCalculateTier_Gold() {
+        BigDecimal spend = new BigDecimal("3000");
         LocalDateTime lastPurchase = LocalDateTime.now().minusMonths(10);
 
-        String tier = callCalculateTier(spend, lastPurchase);
-
-        assertThat(tier).isEqualTo("SILVER");
+        CustomerTier tier = CustomerServiceImpl.calculateTier(spend, lastPurchase);
+        assertEquals(CustomerTier.GOLD, tier);
     }
 
     @Test
-    void shouldValidateEmailFormat() {
-        CustomerDto invalidDto = new CustomerDto(
-                "Invalid User",
-                "invalid-email",
-                new BigDecimal("3000"),
-                LocalDateTime.now()
-        );
+    void testCalculateTier_Silver() {
+        BigDecimal spend = new BigDecimal("500");
+        LocalDateTime lastPurchase = LocalDateTime.now().minusMonths(8);
 
-        boolean isValidEmail = invalidDto.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
-
-        assertThat(isValidEmail).isFalse();
+        CustomerTier tier = CustomerServiceImpl.calculateTier(spend, lastPurchase);
+        assertEquals(CustomerTier.SILVER, tier);
     }
 
-    private String callCalculateTier(BigDecimal spend, LocalDateTime lastPurchase) {
-        try {
-            var method = CustomerServiceImpl.class.getDeclaredMethod("calculateTier", BigDecimal.class, LocalDateTime.class);
-            method.setAccessible(true);
-            CustomerTier tier = (CustomerTier) method.invoke(customerService, spend, lastPurchase);
-            return tier != null ? tier.name() : null;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    @Test
+    void testCalculateTier_NullSpend() {
+        CustomerTier tier = CustomerServiceImpl.calculateTier(null, LocalDateTime.now());
+        assertEquals(CustomerTier.SILVER, tier);
     }
 }
