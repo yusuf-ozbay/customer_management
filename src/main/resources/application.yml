@@ -12,6 +12,10 @@ spring:
     driver-class-name: org.h2.Driver
     # E?er H2 dosya tabanl? veritaban? kullanmak istiyorsan?z, 'jdbc:h2:file:~/testdb' gibi bir URL kullanabilirsiniz.
 
+    #Verilerin uygulama kapanınca kaybolmasını istemiyorsan şunu kullanabilirsin:
+    #spring:
+    #datasource:
+    #url: jdbc:h2:file:~/testdb
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,7 +24,7 @@ spring:
       hibernate:
         format-sql: true
 
-  # H2 konsolunu aktif hale getirmek i�in a?a??daki ayar? da ekleyebilirsin:
+  # H2 konsolunu aktif hale getirmek i�in a?a??daki ayar? da ekleyebilirsin:
   h2:
     console:
       enabled: true
