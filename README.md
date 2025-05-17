@@ -13,8 +13,6 @@ Bu proje, müşterileri listeleme, arama, ekleme, silme ve güncelleme işlemler
 - Maven  
 
 ---
-## Kurulum
-
 ### Gereksinimler
 
 - Java 17+
@@ -28,7 +26,6 @@ mvn spring-boot:run
 
 ---
 ## API Bilgileri
-```
 POST /customers
 Content-Type: application/json
 
@@ -38,11 +35,11 @@ Content-Type: application/json
   "annualSpend": 2000,
   "lastPurchaseDate": "2025-05-10"
 }
-```
+
 GET /customers/1
-```
+
 GET /customers?email=jane.doe@example.com
-```
+
 PUT /customers/1
 Content-Type: application/json
 
@@ -52,7 +49,7 @@ Content-Type: application/json
   "annualSpend": 2500,
   "lastPurchaseDate": "2025-05-15"
 }
-```
+
 DELETE /customers/1
 
 ---
