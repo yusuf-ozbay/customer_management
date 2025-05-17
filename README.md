@@ -28,6 +28,7 @@ mvn spring-boot:run
 
 ---
 ## API Bilgileri
+```
 POST /customers
 Content-Type: application/json
 
