@@ -67,7 +67,7 @@ Uygulama çalışırken veritabanına erişmek için aşağıdaki H2 konsolu kul
   ![H2 Console](./src/main/java/org/example/customer_management/screenshots/h2-console.png)
 
 - Müşteri Ekleme Formu:  
-  ![Add Customer](./src/main/java/org/example/customer_management/screenshots/add-customer.png)
+  ![Add Customer](.src\main\java\org\example\customer_management\screenshots\add-customer.png)
 
 - Search Dropdown:  
   ![Search Dropdown](./src/main/java/org/example/customer_management/screenshots/search-dropdown.png)
