@@ -78,9 +78,8 @@ Uygulama çalışırken veritabanına erişmek için aşağıdaki H2 konsolu kul
 
 - Custumers:
    ![Silver](./src/main/java/org/example/customer_management/screenshots/customers/customer-silver.png)
-  
    ![Gold](./src/main/java/org/example/customer_management/screenshots/customers/customer-gold.png)
-   ![Pilatinum](./src\main\java\org\example\customer_management\screenshots\customers\customer-platinum.png)
+   ![Pilatinum](./src/main/java/org/example/customer_management/screenshots/customers/customer-platinum.png)
 
 
 - Edit:
