@@ -22,6 +22,7 @@ Bu proje, müşterileri listeleme, arama, ekleme, silme ve güncelleme işlemler
 
 ## Derleme
 mvn clean install
+
 mvn spring-boot:run
 
 ---
@@ -69,7 +70,7 @@ Uygulama çalışırken veritabanına erişmek için aşağıdaki H2 konsolu kul
 
 
 - Müşteri Ekleme Formu:  
-  ![Add Customer](.src\main\java\org\example\customer_management\screenshots\add-customer.png)
+  ![Add Customer](./src/main/java/org/example/customer_management/screenshots/add-customer.png)
 
 
 - Search Dropdown:  
@@ -123,5 +124,3 @@ Content-Type: application/json
 }
 
 DELETE /customers/1
----
-
