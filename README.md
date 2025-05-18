@@ -61,7 +61,7 @@ Uygulama çalışırken veritabanına erişmek için aşağıdaki H2 konsolu kul
 ## 🖼️ Ekran Görüntüleri
 
 - Swagger Arayüzü:  
-  ![Swagger UI](./screenshots/swagger.png)
+  ![Swagger UI](./src/main/java/org/example/customer_management/screenshots/swagger.png)
 
 - H2 Console:  
   ![H2 Console](./screenshots/h2-console.png)
