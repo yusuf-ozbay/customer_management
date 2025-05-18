@@ -14,7 +14,10 @@
 @REM software distributed under the License is distributed on an
 @REM "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 @REM KIND, either express or implied.  See the License for the
-@REM specific language governing permissions and limitations
+@REM specific language governing permissionsPS C:\Users\Berk\IdeaProjects\customer_management> .\mvnw.cmd clean verify sonar:sonar -Dsonar.projectKey=customer-management -Dsonar.host.url=http://localhost:9000 -Dsonar.login=squ_840d7c6fac19c5852232677a60e8daa5685538a8
+                                            Error: Invalid or corrupt jarfile C:\Users\Berk\IdeaProjects\customer_management\.mvn\wrapper\maven-wrapper.jar
+                                            PS C:\Users\Berk\IdeaProjects\customer_management>
+ and limitations
 @REM under the License.
 @REM ----------------------------------------------------------------------------
 
