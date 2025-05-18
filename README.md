@@ -64,14 +64,21 @@ Uygulama çalışırken veritabanına erişmek için aşağıdaki H2 konsolu kul
   ![Swagger UI](./src/main/java/org/example/customer_management/screenshots/swagger.png)
 
 - H2 Console:  
-  ![H2 Console](./screenshots/h2-console.png)
+  ![H2 Console](./src/main/java/org/example/customer_management/screenshots/h2-console.png)
 
 - Müşteri Ekleme Formu:  
-  ![Add Customer](./screenshots/add-customer.png)
+  ![Add Customer](./src/main/java/org/example/customer_management/screenshots/add-customer.png)
 
-- Müşteri Listesi:  
-  ![Customer List](./screenshots/customer-list.png)
+- Search Dropdown:  
+  ![Search Dropdown](./src/main/java/org/example/customer_management/screenshots/search-dropdown.png)
 
+- Custumers:
+   ![Silver](./src/main/java/org/example/customer_management/screenshots/customers/customer-silver.png)
+   ![Gold](./src/main/java/org/example/customer_management/screenshots/customers/customer-gold.png)
+   ![Pilatinum](./src/main/java/org/example/customer_management/screenshots/customers/customer-pilatinum.png)
+
+- Edit:
+   ![Edit](./src/main/java/org/example/customer_management/screenshots/edit.png)
 ## 💡 Varsayımlar
 
 - Her müşterinin e-posta adresi benzersizdir.
